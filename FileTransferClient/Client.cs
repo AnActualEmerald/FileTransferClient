@@ -6,6 +6,7 @@
  * 
  */
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -60,7 +61,7 @@ namespace FileTransferClient
 		
 		private void begin()
 		{
-			cm.WriteLine("Connected to host: " + _client.Client.RemoteEndPoint);
+			cm.WriteLine("Connected to host: " + _client.RemoteEndPoint);
 			while(true){
 				cm.Write("Enter command: ");
 				String command = cm.GetInput();
@@ -76,19 +77,42 @@ namespace FileTransferClient
 				Environment.Exit(0);
 			}
 			
-			if(command.StartsWith("cd"))
+			foreach(Command c in Command.avail_commands)
 			{
-				string[] com = command.Split(' ');
-				foreach(string c in com)
-					c.Trim();
+				foreach(string al in c.aliases){
+					if(command.StartsWith(al))
+					{
+						string[] com = command.Split(' ');
+						foreach(string cc in com)
+							cc.Trim();
 					
-				SendText("com:"+cm[0]+";param:"+cm[1]);
+						if(SendCommand(c, com))
+							Listen();
+						
+						return;
+					}
+				}
 			}
+			
 		}
 		
-		public void SendCommand(Command c)
+		public void Listen()
 		{
-			
+			_client.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(RecCall), null);
+		}
+		
+		public bool SendCommand(Command c, string[] com)
+		{
+			try{
+				if(c.vars.Length == 0)
+					SendText("com:"+com[0]+";param:none");
+				else
+					SendText("com:"+com[0]+";param:"+com[1]);
+			}catch(IndexOutOfRangeException){
+				cm.WriteLine(c.HelpString());
+				return false;
+			}
+			return true;
 		}
 		
 		private void SendText(String msg)
@@ -103,13 +127,58 @@ namespace FileTransferClient
 			_client.EndSend(r);
 		}
 		
+		private void RecCall(IAsyncResult r)
+		{
+			int len = _client.EndReceive(r);
+			byte[] rec = new byte[len];
+			Array.Copy(buffer, rec, len);
+			
+			cm.WriteLine(Encoding.ASCII.GetString(rec));
+		}
+		
 		#endregion
 	}
 	
-	public struct Command
-	{
+	public class Command
+	{	
+		public static List<Command> avail_commands = new List<Command>();
+	
+		#region Commands
+		
+		public static readonly Command Directory = new Command("dir", new string[]{}, 
+		                                                       new string[]{"dir", "directory"});
+		public static readonly Command GetFile = new Command("get-file", new string[]{"path"}, 
+		                                                     new string[]{"get-file", "gf"});
+		public static readonly Command ChangeDir = new Command("cd", new string[]{"path"},
+		                                                       new string[]{"cd", "change-dir"});
+		public static readonly Command Stop = new Command("stop", new string[]{}, new string[]{});
+		
+		#endregion
+				
 		public String name;
 		public String[] vars;
+		public String[] aliases;
+		
+		public Command(string name, string[] vars, string[] aliases)
+		{
+			this.name = name;
+			this.vars = vars;
+			this.aliases = aliases;
+			if(avail_commands == null)
+				avail_commands = new List<Command>();
+			avail_commands.Add(this);
+		}
+		
+		public string HelpString()
+		{
+			String s = name;
+			foreach(string ss in vars)
+			{
+				s += "["+ss+"]";
+			}
+			
+			return s;
+		}
 	}
 	
 }
