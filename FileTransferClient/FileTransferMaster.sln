@@ -4,6 +4,8 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # SharpDevelop 5.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTransferClient", "FileTransferClient.csproj", "{D4B0B972-2572-4551-BFDD-FC54DBD51825}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileTransferServer", "..\FileTransferServer\FileTransferServer.csproj", "{0B59F5C1-4FE7-439F-8041-ABA6B16BFA87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,5 +16,9 @@ Global
 		{D4B0B972-2572-4551-BFDD-FC54DBD51825}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4B0B972-2572-4551-BFDD-FC54DBD51825}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4B0B972-2572-4551-BFDD-FC54DBD51825}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B59F5C1-4FE7-439F-8041-ABA6B16BFA87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B59F5C1-4FE7-439F-8041-ABA6B16BFA87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B59F5C1-4FE7-439F-8041-ABA6B16BFA87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B59F5C1-4FE7-439F-8041-ABA6B16BFA87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -59,6 +59,7 @@ namespace FileTransferClient
 			return this;
 		}
 		
+		// disable once FunctionNeverReturns
 		private void begin()
 		{
 			cm.WriteLine("Connected to host: " + _client.RemoteEndPoint);
@@ -69,6 +70,7 @@ namespace FileTransferClient
 			}
 		}
 		
+	
 		private void ProcessCommand(String command)
 		{
 			if(command.StartsWith("stop"))
@@ -174,7 +176,7 @@ namespace FileTransferClient
 			String s = name;
 			foreach(string ss in vars)
 			{
-				s += "["+ss+"]";
+				s += " ["+ss+"]";
 			}
 			
 			return s;

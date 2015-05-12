@@ -1,0 +1,6 @@
+C:\Users\kgauthier16\Documents\SharpDevelop Projects\FileTransferClient\FileTransferServer\bin\Debug\FileTransferServer.exe.config
+C:\Users\kgauthier16\Documents\SharpDevelop Projects\FileTransferClient\FileTransferServer\bin\Debug\FileTransferServer.exe
+C:\Users\kgauthier16\Documents\SharpDevelop Projects\FileTransferClient\FileTransferServer\bin\Debug\FileTransferServer.pdb
+C:\Users\kgauthier16\Documents\SharpDevelop Projects\FileTransferClient\FileTransferServer\obj\Debug\FileTransferServer.csprojResolveAssemblyReference.cache
+C:\Users\kgauthier16\Documents\SharpDevelop Projects\FileTransferClient\FileTransferServer\obj\Debug\FileTransferServer.exe
+C:\Users\kgauthier16\Documents\SharpDevelop Projects\FileTransferClient\FileTransferServer\obj\Debug\FileTransferServer.pdb
