@@ -17,8 +17,9 @@ namespace FileTransferClient
 			Console.WriteLine("Hello World!");
 			
 			// TODO: Implement Functionality Here
+
 			
-			new	Client().connect(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 25565));
+			new	Client().connect(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 28889));
 		}
 	}
 }

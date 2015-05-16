@@ -13,9 +13,11 @@ namespace FileTransferServer
 	{
 		public static void Main(string[] args)
 		{
-			Console.WriteLine("Hello World!");
+			Console.WriteLine("Starting Server...");
 			
 			// TODO: Implement Functionality Here
+			
+			
 			
 			new Server().Start();
 			Console.ReadLine();

@@ -31,8 +31,7 @@ namespace FileTransferClient
 		
 		public Client connect(IPEndPoint ep, int try_limit = 10)
 		{
-			begin();
-			//return this;
+			
 			int tries = 0;
 			do{
 				tries++;
@@ -40,7 +39,7 @@ namespace FileTransferClient
 					cm.WriteLine("Try connect #"+tries);
 					_client.Connect(ep);
 				}catch(Exception e){
-					cm.WriteLine("Couldn't connect with error: " + e.StackTrace);
+					//cm.WriteLine("Couldn't connect with error: " + e.StackTrace);
 				}
 				
 				if(_client.Connected)
@@ -64,7 +63,7 @@ namespace FileTransferClient
 		{
 			cm.WriteLine("Connected to host: " + _client.RemoteEndPoint);
 			while(true){
-				cm.Write("Enter command: ");
+				cm.Write("Enter command:");
 				String command = cm.GetInput();
 				ProcessCommand(command);
 			}
@@ -100,16 +99,20 @@ namespace FileTransferClient
 		
 		public void Listen()
 		{
-			_client.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(RecCall), null);
+			int len = _client.Receive(buffer, buffer.Length, SocketFlags.None);
+			byte[] rec = new byte[len];
+			Array.Copy(buffer, rec, len);
+			
+			cm.WriteLine(Encoding.ASCII.GetString(rec));//BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(RecCall), null);
 		}
 		
 		public bool SendCommand(Command c, string[] com)
 		{
 			try{
 				if(c.vars.Length == 0)
-					SendText("com:"+com[0]+";param:none");
+					SendText("com|"+com[0]+";param|none");
 				else
-					SendText("com:"+com[0]+";param:"+com[1]);
+					SendText("com|"+com[0]+";param|"+com[1]);
 			}catch(IndexOutOfRangeException){
 				cm.WriteLine(c.HelpString());
 				return false;

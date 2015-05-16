@@ -35,52 +35,98 @@ namespace FileTransferServer
 		{
 			_server.Bind(new IPEndPoint(IPAddress.Any, 28889));
 			_server.Listen(5);
+			Console.Write("Listening for clients...");
 			_server.BeginAccept(new AsyncCallback(AcceptCall), null);
 		}
 		
-		private void ProcessClientInput(String command)
+		private void ProcessClientInput(String command, Socket client)
 		{
+			Console.WriteLine("Client: " + command);
+			
 			if(command.StartsWith("com"))
 			{
 				String[] comparam = command.Split(';');
-				string com = comparam[0].Split(':')[1];
-				string param = comparam[1].Split(':')[1];
+				string com = comparam[0].Split('|')[1];
+				string param = comparam[1].Split('|')[1];
 				
 				if(com == "cd" || com == "chang-dir"){
-					currentDir = param;
-					SendText(currentDir);
+					if(param.Contains(":"))
+						currentDir = param;
+					else
+						if(currentDir.EndsWith("/") || param.StartsWith("/"))
+							currentDir += param + "/";
+						else
+							currentDir += "/" + param + "/";
+					if(!Directory.Exists(currentDir))
+					{
+						SendText("Server: NO SUCH DIRECTORY \""+ currentDir + "\"", client);
+					}
+					SendText("Server: " + currentDir, client);
+				}else if (com == "dir"){
+					String dirString = currentDir + "\n";
+					if(!Directory.Exists(currentDir))
+						SendText("Server: NO SUCH DIRECTORY \""+ currentDir + "\"", client);
+					string[] dirs = Directory.GetDirectories(currentDir);
+					string[] files = Directory.GetFiles(currentDir);
+					foreach(string dir in dirs)
+					{
+						dirString += dir;
+						for(int i = 0; i < Console.WindowWidth - dir.Length - 10; i++)
+							dirString += " ";
+						dirString += "DIRECTORY";
+						dirString += "\n";
+					}
+					
+					foreach(string fil in files)
+					{
+						dirString += fil;
+						for(int i = 0; i < Console.WindowWidth - fil.Length - 10; i++)
+							dirString += " ";
+						dirString += "FILE";
+						dirString += "\n";
+					}
+					
+					SendText("Server: " + dirString, client);
 				}
 			}
 		}
 		
-		private void SendText(String msg)
+		private void SendText(String msg, Socket target)
 		{
 			byte[] tmp = Encoding.ASCII.GetBytes(msg);
-			_server.BeginSend(tmp, 0, tmp.Length, SocketFlags.None, new AsyncCallback(SendCall), null);
+			target.BeginSend(tmp, 0, tmp.Length, SocketFlags.None, new AsyncCallback(SendCall), target
+			                );
 		}
 		
 		#region Callbacks
 		private void AcceptCall(IAsyncResult r)
 		{
 			Socket client = _server.EndAccept(r);
+			Console.Write("\rClient Connected!\n");
 			client.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ClientRecCall), client);
 		}
 		
 		private void ClientRecCall(IAsyncResult r)
 		{
+			try{
 			Socket client = (Socket)r.AsyncState;
 			int len = client.EndReceive(r);
 			byte[] rec = new byte[len];
 			Array.Copy(buffer, rec, len);
 			
-			ProcessClientInput(Encoding.ASCII.GetString(rec));
+			ProcessClientInput(Encoding.ASCII.GetString(rec), client);
 			
 			client.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ClientRecCall), client);
+			}catch(Exception e){
+				Console.WriteLine("A thing happened");
+				Console.WriteLine(e.StackTrace);
+				Console.ReadLine();
+			}
 		}
 		
 		private void SendCall(IAsyncResult r)
 		{
-			_server.EndSend(r);
+			((Socket)r.AsyncState).EndSend(r);
 		}
 		#endregion
 	}
