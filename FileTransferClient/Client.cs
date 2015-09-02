@@ -20,7 +20,7 @@ namespace FileTransferClient
 	{
 		private ConsoleManager cm;
 		private Socket _client;
-		private byte[] buffer = new byte[1024];
+		private byte[] buffer = new byte[2048];
 		
 		
 		public Client()
@@ -99,11 +99,13 @@ namespace FileTransferClient
 		
 		public void Listen()
 		{
-			int len = _client.Receive(buffer, buffer.Length, SocketFlags.None);
-			byte[] rec = new byte[len];
-			Array.Copy(buffer, rec, len);
+			do{
+				int len = _client.Receive(buffer, buffer.Length, SocketFlags.None);
+				byte[] rec = new byte[len];
+				Array.Copy(buffer, rec, len);
 			
-			cm.WriteLine(Encoding.ASCII.GetString(rec));//BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(RecCall), null);
+				cm.WriteLine(Encoding.ASCII.GetString(rec));	
+			}while(_client.Available != 0);
 		}
 		
 		public bool SendCommand(Command c, string[] com)
@@ -157,7 +159,7 @@ namespace FileTransferClient
 		public static readonly Command ChangeDir = new Command("cd", new string[]{"path"},
 		                                                       new string[]{"cd", "change-dir"});
 		public static readonly Command Stop = new Command("stop", new string[]{}, new string[]{});
-		
+	
 		#endregion
 				
 		public String name;
