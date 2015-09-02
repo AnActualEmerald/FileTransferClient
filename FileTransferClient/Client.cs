@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.IO;
 
 namespace FileTransferClient
 {
@@ -21,12 +22,15 @@ namespace FileTransferClient
 		private ConsoleManager cm;
 		private Socket _client;
 		private byte[] buffer = new byte[2048];
+        private int num_gotten = 0;
 		
 		
 		public Client()
 		{
 			cm= new ConsoleManager();
-			_client = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            if (!Directory.Exists("./Recieved Files"))
+                Directory.CreateDirectory("./Recieved Files");
+			_client = new Socket(AddressFamily.Unspecified, SocketType.Stream, ProtocolType.Tcp);
 		}
 		
 		public Client connect(IPEndPoint ep, int try_limit = 10)
@@ -84,12 +88,24 @@ namespace FileTransferClient
 					if(command.StartsWith(al))
 					{
 						string[] com = command.Split(' ');
-						foreach(string cc in com)
-							cc.Trim();
-					
-						if(SendCommand(c, com))
-							Listen();
-						
+                        foreach (string cc in com)
+                            cc.Trim();
+
+                        if (SendCommand(c, com))
+                        {
+                            if (c.name == "get-file")
+                            {
+                                try {
+                                    RecFile(com[1].Split('.')[1]);
+                                }
+                                catch (IndexOutOfRangeException)
+                                {
+                                    cm.WriteLine("Filetype needed");
+                                }
+                            }
+                            else
+                                Listen();
+                        }
 						return;
 					}
 				}
@@ -107,8 +123,26 @@ namespace FileTransferClient
 				cm.WriteLine(Encoding.ASCII.GetString(rec));	
 			}while(_client.Available != 0);
 		}
-		
-		public bool SendCommand(Command c, string[] com)
+
+        private void RecFile(String _t)
+        {
+            List<Byte> file_bits = new List<byte>();
+            do
+            {
+                int len = _client.Receive(buffer, buffer.Length, SocketFlags.None);
+                byte[] rec = new byte[len];
+                Array.Copy(buffer, rec, len);
+                file_bits.AddRange(rec);
+                cm.WriteLine("Got " + file_bits.Count + " of " + _client.Available);
+            } while (_client.Available != 0);
+            cm.WriteLine("File recieved");
+            num_gotten = Directory.GetFiles("./Recieved Files/").Length;
+            File.WriteAllBytes("./Recieved Files/file"+num_gotten+"."+_t, file_bits.ToArray());
+            cm.WriteLine("FIle saved at ./Recieved Files/file" + num_gotten + "." + _t);
+            
+        }
+
+        public bool SendCommand(Command c, string[] com)
 		{
 			try{
 				if(c.vars.Length == 0)
@@ -127,9 +161,9 @@ namespace FileTransferClient
 			byte[] tmp = Encoding.ASCII.GetBytes(msg);
 			_client.BeginSend(tmp, 0, tmp.Length, SocketFlags.None, new AsyncCallback(SendCall), null);
 		}
-		
-		#region callbacks
-		private void SendCall(IAsyncResult r)
+
+        #region callbacks
+        private void SendCall(IAsyncResult r)
 		{
 			_client.EndSend(r);
 		}

@@ -26,7 +26,7 @@ namespace FileTransferServer
 				
 		public Server()
 		{
-			_server = new Socket(SocketType.Stream, ProtocolType.Tcp);
+			_server = new Socket(AddressFamily.Unspecified, SocketType.Stream, ProtocolType.Tcp);
 			currentDir = "c:/";
 			
 		}
@@ -48,46 +48,62 @@ namespace FileTransferServer
 				String[] comparam = command.Split(';');
 				string com = comparam[0].Split('|')[1];
 				string param = comparam[1].Split('|')[1];
-				
-				if(com == "cd" || com == "chang-dir"){
-					if(param.Contains(":"))
-						currentDir = param;
-					else
-						if(currentDir.EndsWith("/") || param.StartsWith("/"))
-							currentDir += param + "/";
-						else
-							currentDir += "/" + param + "/";
-					if(!Directory.Exists(currentDir))
-					{
-						SendText("Server: NO SUCH DIRECTORY \""+ currentDir + "\"", client);
-					}
-					SendText("Server: " + currentDir, client);
-				}else if (com == "dir"){
-					String dirString = currentDir + "\n";
-					if(!Directory.Exists(currentDir))
-						SendText("Server: NO SUCH DIRECTORY \""+ currentDir + "\"", client);
-					string[] dirs = Directory.GetDirectories(currentDir);
-					string[] files = Directory.GetFiles(currentDir);
-					foreach(string dir in dirs)
-					{
-						dirString += dir;
-						for(int i = 0; i < Console.WindowWidth - dir.Length - 10; i++)
-							dirString += " ";
-						dirString += "DIRECTORY";
-						dirString += "\n";
-					}
-					
-					foreach(string fil in files)
-					{
-						dirString += fil;
-						for(int i = 0; i < Console.WindowWidth - fil.Length - 10; i++)
-							dirString += " ";
-						dirString += "FILE";
-						dirString += "\n";
-					}
-					
-					SendText("Server: " + dirString, client);
-				}
+
+                if (com == "cd" || com == "chang-dir")
+                {
+                    if (param.Contains(":"))
+                        currentDir = param;
+                    else
+                        if (currentDir.EndsWith("/") || param.StartsWith("/"))
+                        currentDir += param + "/";
+                    else
+                        currentDir += "/" + param + "/";
+                    if (!Directory.Exists(currentDir))
+                    {
+                        SendText("Server: NO SUCH DIRECTORY \"" + currentDir + "\"", client);
+                    }
+                    SendText("Server: " + currentDir, client);
+                }
+                else if (com == "dir")
+                {
+                    String dirString = currentDir + "\n";
+                    if (!Directory.Exists(currentDir))
+                        SendText("Server: NO SUCH DIRECTORY \"" + currentDir + "\"", client);
+                    string[] dirs = Directory.GetDirectories(currentDir);
+                    string[] files = Directory.GetFiles(currentDir);
+                    foreach (string dir in dirs)
+                    {
+                        dirString += dir;
+                        for (int i = 0; i < Console.WindowWidth - dir.Length - 10; i++)
+                            dirString += " ";
+                        dirString += "DIRECTORY";
+                        dirString += "\n";
+                    }
+
+                    foreach (string fil in files)
+                    {
+                        dirString += fil;
+                        for (int i = 0; i < Console.WindowWidth - fil.Length - 10; i++)
+                            dirString += " ";
+                        dirString += "FILE";
+                        dirString += "\n";
+                    }
+
+                    SendText("Server: " + dirString, client);
+                }
+                else if (com == "get-file" || com == "gf")
+                {
+                    try
+                    {
+                        if (!currentDir.EndsWith("/"))
+                            currentDir += "/";
+                        SendFile(currentDir + param, client);
+                    }catch(FileNotFoundException f)
+                    {
+                        SendText("File not found at \"" + f.FileName + "\"", client);
+                    }
+                }
+
 			}
 		}
 		
@@ -97,6 +113,21 @@ namespace FileTransferServer
 			target.BeginSend(tmp, 0, tmp.Length, SocketFlags.None, new AsyncCallback(SendCall), target
 			                );
 		}
+
+        private void SendFile(String path, Socket target)
+        {
+            try
+            {
+                target.BeginSendFile(path, new AsyncCallback(SendFileCall), target);
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine(e.Message);
+                SendText("Unable to access file", target);
+            }
+
+        }
+
 		
 		#region Callbacks
 		private void AcceptCall(IAsyncResult r)
@@ -118,9 +149,9 @@ namespace FileTransferServer
 			
 			client.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ClientRecCall), client);
 			}catch(Exception e){
-				Console.WriteLine("A thing happened");
-				Console.WriteLine(e.StackTrace);
-				Console.ReadLine();
+                Console.WriteLine("Client disconnected: " +e.InnerException);
+                Console.Write("Listening for clients...");
+                _server.BeginAccept(new AsyncCallback(AcceptCall), null);
 			}
 		}
 		
@@ -128,6 +159,11 @@ namespace FileTransferServer
 		{
 			((Socket)r.AsyncState).EndSend(r);
 		}
+
+        private void SendFileCall(IAsyncResult r)
+        {
+            ((Socket)r.AsyncState).EndSendFile(r);
+        }
 		#endregion
 	}
 }

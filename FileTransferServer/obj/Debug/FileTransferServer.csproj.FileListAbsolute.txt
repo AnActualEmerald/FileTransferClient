@@ -10,3 +10,9 @@ C:\Users\kgauthier16\Documents\GitHub\FileTransferClient\FileTransferServer\obj\
 C:\Users\kgauthier16\Documents\GitHub\FileTransferClient\FileTransferServer\obj\Debug\FileTransferServer.exe
 C:\Users\kgauthier16\Documents\GitHub\FileTransferClient\FileTransferServer\obj\Debug\FileTransferServer.pdb
 C:\Users\kgauthier16\Documents\GitHub\FileTransferClient\FileTransferServer\bin\Debug\FileTransferServer.pdb
+C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferServer\bin\Debug\FileTransferServer.exe.config
+C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferServer\obj\Debug\FileTransferServer.exe
+C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferServer\obj\Debug\FileTransferServer.pdb
+C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferServer\bin\Debug\FileTransferServer.exe
+C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferServer\bin\Debug\FileTransferServer.pdb
+C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferServer\obj\Debug\FileTransferServer.csprojResolveAssemblyReference.cache
