@@ -133,7 +133,7 @@ namespace FileTransferServer
 		private void AcceptCall(IAsyncResult r)
 		{
 			Socket client = _server.EndAccept(r);
-			Console.Write("\rClient Connected!\n");
+			Console.Write("Client Connected!\n");
 			client.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ClientRecCall), client);
 		}
 		

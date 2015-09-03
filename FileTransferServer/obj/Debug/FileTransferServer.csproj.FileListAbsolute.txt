@@ -16,3 +16,5 @@ C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferServer\obj\De
 C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferServer\bin\Debug\FileTransferServer.exe
 C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferServer\bin\Debug\FileTransferServer.pdb
 C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferServer\obj\Debug\FileTransferServer.csprojResolveAssemblyReference.cache
+C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferServer\obj\Debug\FileTransferServer.ServerOutput.resources
+C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferServer\obj\Debug\FileTransferServer.csproj.GenerateResource.Cache

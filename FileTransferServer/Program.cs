@@ -5,22 +5,22 @@
  * Time: 9:45 AM
  * 
  */
-using System;
+
+using System.Windows.Forms;
 
 namespace FileTransferServer
 {
-	class Program
+    class Program
 	{
 		public static void Main(string[] args)
 		{
-			Console.WriteLine("Starting Server...");
-			
-			// TODO: Implement Functionality Here
-			
-			
-			
-			new Server().Start();
-			Console.ReadLine();
+            //Console.WriteLine("Starting Server...");
+
+            // TODO: Implement Functionality Here
+            Application.EnableVisualStyles();
+            Application.Run(new ServerOutput());
 		}
+
+
 	}
 }
