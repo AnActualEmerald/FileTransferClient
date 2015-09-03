@@ -14,12 +14,18 @@ namespace FileTransferClient
 	{
 		public static void Main(string[] args)
 		{
-			Console.WriteLine("Hello World!");
+			Console.WriteLine("Welcome to Burrito's File Transfer System!");
 			
 			// TODO: Implement Functionality Here
-
 			
-			new	Client().connect(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 28889));
+			Console.Write("Enter IP: ");
+			String ip = Console.ReadLine();
+			System.Net.IPAddress addr;
+			if(ip.Contains("local"))
+				addr = System.Net.IPAddress.Loopback;
+			else
+				addr = System.Net.IPAddress.Parse(ip);
+			new	Client().connect(new System.Net.IPEndPoint(addr, 28889));
 		}
 	}
 }

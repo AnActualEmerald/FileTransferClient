@@ -30,7 +30,7 @@ namespace FileTransferClient
 			cm= new ConsoleManager();
             if (!Directory.Exists("./Recieved Files"))
                 Directory.CreateDirectory("./Recieved Files");
-			_client = new Socket(AddressFamily.Unspecified, SocketType.Stream, ProtocolType.Tcp);
+			_client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		}
 		
 		public Client connect(IPEndPoint ep, int try_limit = 10)
@@ -87,7 +87,19 @@ namespace FileTransferClient
 				foreach(string al in c.aliases){
 					if(command.StartsWith(al))
 					{
-						string[] com = command.Split(' ');
+						string[] com;
+						if(command.Contains("\""))
+						{
+							int index = command.IndexOf('\"');
+							string par = command.Substring(index);
+							par = par.Replace(' ', '%');
+							par = par.Replace('\"', ' ');
+							par = par.Trim();
+							string cmd = command.Split(' ')[0];
+							com = new string[]{cmd, par};
+						}else{
+							com = command.Split(' ');
+						}
                         foreach (string cc in com)
                             cc.Trim();
 

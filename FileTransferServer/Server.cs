@@ -18,7 +18,7 @@ namespace FileTransferServer
 	/// </summary>
 	public class Server
 	{
-		private Socket _server;
+		private TcpListener _server;
 		private String currentDir;
 		private bool isConnected = false;
 		
@@ -26,17 +26,17 @@ namespace FileTransferServer
 				
 		public Server()
 		{
-			_server = new Socket(AddressFamily.Unspecified, SocketType.Stream, ProtocolType.Tcp);
 			currentDir = "c:/";
 			
 		}
 		
 		public void Start()
 		{
-			_server.Bind(new IPEndPoint(IPAddress.Any, 28889));
-			_server.Listen(5);
+			_server = new TcpListener(new IPEndPoint(IPAddress.Any, 28889));
+			_server.AllowNatTraversal(true);
+			_server.Start(5);
 			Console.Write("Listening for clients...");
-			_server.BeginAccept(new AsyncCallback(AcceptCall), null);
+			_server.BeginAcceptSocket(new AsyncCallback(AcceptCall), null);
 		}
 		
 		private void ProcessClientInput(String command, Socket client)
@@ -51,6 +51,7 @@ namespace FileTransferServer
 
                 if (com == "cd" || com == "chang-dir")
                 {
+                	param = param.Replace('%', ' ');
                     if (param.Contains(":"))
                         currentDir = param;
                     else
@@ -93,6 +94,7 @@ namespace FileTransferServer
                 }
                 else if (com == "get-file" || com == "gf")
                 {
+                	param = param.Replace('%', ' ');
                     try
                     {
                         if (!currentDir.EndsWith("/"))
@@ -137,7 +139,7 @@ namespace FileTransferServer
 		#region Callbacks
 		private void AcceptCall(IAsyncResult r)
 		{
-			Socket client = _server.EndAccept(r);
+			Socket client = _server.EndAcceptSocket(r);
 			Console.Write("Client Connected!\n");
 			client.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ClientRecCall), client);
 		}
@@ -156,7 +158,7 @@ namespace FileTransferServer
 			}catch(Exception e){
                 Console.WriteLine("Client disconnected: " +e.StackTrace);
                 Console.Write("Listening for clients...");
-                _server.BeginAccept(new AsyncCallback(AcceptCall), null);
+                _server.BeginAcceptSocket(new AsyncCallback(AcceptCall), null);
 			}
 		}
 		
