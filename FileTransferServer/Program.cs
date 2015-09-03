@@ -6,7 +6,7 @@
  * 
  */
 
-using System.Windows.Forms;
+using System;
 
 namespace FileTransferServer
 {
@@ -14,11 +14,9 @@ namespace FileTransferServer
 	{
 		public static void Main(string[] args)
 		{
-            //Console.WriteLine("Starting Server...");
-
-            // TODO: Implement Functionality Here
-            Application.EnableVisualStyles();
-            Application.Run(new ServerOutput());
+            Console.WriteLine("Starting Server");
+            new Server().Start();
+            Console.ReadLine();
 		}
 
 
