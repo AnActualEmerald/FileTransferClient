@@ -39,7 +39,20 @@ namespace FileTransferServer
 
         private void TrayIcon_MouseMove(object sender, MouseEventArgs e)
         {
-            TrayIcon.ShowBalloonTip(3);
+            TrayIcon.Visible = false;
+            this.StartPosition = FormStartPosition.CenterScreen;
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            TrayIcon.Visible = true;
+            this.WindowState = FormWindowState.Minimized;
         }
     }
 

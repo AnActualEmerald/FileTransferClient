@@ -98,11 +98,16 @@ namespace FileTransferServer
                         if (!currentDir.EndsWith("/"))
                             currentDir += "/";
                         SendFile(currentDir + param, client);
-                    }catch(FileNotFoundException f)
+                    }
+                    catch (FileNotFoundException f)
                     {
                         SendText("File not found at \"" + f.FileName + "\"", client);
                     }
                 }
+                else {
+                    SendText("Unknown Command or Other Error", client);
+                }
+
 
 			}
 		}
@@ -149,7 +154,7 @@ namespace FileTransferServer
 			
 			    client.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ClientRecCall), client);
 			}catch(Exception e){
-                Console.WriteLine("Client disconnected: " +e.InnerException);
+                Console.WriteLine("Client disconnected: " +e.StackTrace);
                 Console.Write("Listening for clients...");
                 _server.BeginAccept(new AsyncCallback(AcceptCall), null);
 			}
