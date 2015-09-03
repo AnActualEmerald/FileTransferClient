@@ -140,14 +140,14 @@ namespace FileTransferServer
 		private void ClientRecCall(IAsyncResult r)
 		{
 			try{
-			Socket client = (Socket)r.AsyncState;
-			int len = client.EndReceive(r);
-			byte[] rec = new byte[len];
-			Array.Copy(buffer, rec, len);
+			    Socket client = (Socket)r.AsyncState;
+			    int len = client.EndReceive(r);
+			    byte[] rec = new byte[len];
+			    Array.Copy(buffer, rec, len);
 			
-			ProcessClientInput(Encoding.ASCII.GetString(rec), client);
+			    ProcessClientInput(Encoding.ASCII.GetString(rec), client);
 			
-			client.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ClientRecCall), client);
+			    client.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ClientRecCall), client);
 			}catch(Exception e){
                 Console.WriteLine("Client disconnected: " +e.InnerException);
                 Console.Write("Listening for clients...");

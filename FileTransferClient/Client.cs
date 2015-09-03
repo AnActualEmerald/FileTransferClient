@@ -23,6 +23,7 @@ namespace FileTransferClient
 		private Socket _client;
 		private byte[] buffer = new byte[2048];
         private int num_gotten = 0;
+        private IPAddress ip;
 		
 		
 		public Client()
