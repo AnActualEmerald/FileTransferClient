@@ -1,0 +1,17 @@
+﻿<Properties StartupConfiguration="{0B59F5C1-4FE7-439F-8041-ABA6B16BFA87}|Default">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workbench ActiveDocument="FileTransferClient\Client.cs">
+    <Files>
+      <File FileName="FileTransferClient\Client.cs" Line="1" Column="1" />
+      <File FileName="FileTransferClient\ConsoleManager.cs" Line="1" Column="1" />
+      <File FileName="FileTransferClient\Program.cs" Line="15" Column="41" />
+      <File FileName="FileTransferServer\Server.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.FileTransferServer PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.ItemProperties.FileTransferClient PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>

@@ -20,7 +20,9 @@ namespace FileTransferClient
 	public class Client
 	{
 		private ConsoleManager cm;
-		private Socket _client;
+		//private Socket client;
+		private TcpClient client;
+		private NetworkStream stream;
 		private byte[] buffer = new byte[2048];
         private int num_gotten = 0;
 		
@@ -30,28 +32,30 @@ namespace FileTransferClient
 			cm= new ConsoleManager();
             if (!Directory.Exists("./Recieved Files"))
                 Directory.CreateDirectory("./Recieved Files");
-			_client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			//client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		}
 		
 		public Client connect(IPEndPoint ep, int try_limit = 10)
 		{
 			
 			int tries = 0;
+			client = new TcpClient();
+
 			do{
 				tries++;
 				try{
 					cm.WriteLine("Try connect #"+tries);
-					_client.Connect(ep);
+					client.Connect(ep);
 				}catch(Exception e){
-					//cm.WriteLine("Couldn't connect with error: " + e.StackTrace);
+					cm.WriteLine("Couldn't connect with error: " + e.StackTrace);
 				}
 				
-				if(_client.Connected)
+				if(client.Connected)
 					break;
 				
 			}while(tries < try_limit);
 			
-			if(_client.Connected)
+			if(client.Connected)
 			{
 				begin();
 			}else{
@@ -65,7 +69,8 @@ namespace FileTransferClient
 		// disable once FunctionNeverReturns
 		private void begin()
 		{
-			cm.WriteLine("Connected to host: " + _client.RemoteEndPoint);
+			stream = client.GetStream();
+			cm.WriteLine("Connected to host: " + client.Client.RemoteEndPoint);
 			while(true){
 				cm.Write("Enter command:");
 				String command = cm.GetInput();
@@ -78,6 +83,7 @@ namespace FileTransferClient
 		{
 			if(command.StartsWith("stop"))
 			{
+				stream.Dispose();
 				cm.WriteLine("Stopping program...");
 				Environment.Exit(0);
 			}
@@ -142,12 +148,12 @@ namespace FileTransferClient
 		public void Listen()
 		{
 			do{
-				int len = _client.Receive(buffer, buffer.Length, SocketFlags.None);
+				int len = stream.Read(buffer, 0, buffer.Length);
 				byte[] rec = new byte[len];
 				Array.Copy(buffer, rec, len);
 			
 				cm.WriteLine(Encoding.ASCII.GetString(rec));	
-			}while(_client.Available != 0);
+			}while(stream.DataAvailable);
 		}
 
         private void RecFile(String _t)
@@ -155,12 +161,12 @@ namespace FileTransferClient
             List<Byte> file_bits = new List<byte>();
             do
             {
-                int len = _client.Receive(buffer, buffer.Length, SocketFlags.None);
+				int len = stream.Read(buffer, 0, buffer.Length);
                 byte[] rec = new byte[len];
                 Array.Copy(buffer, rec, len);
                 file_bits.AddRange(rec);
-                cm.WriteLine("Got " + file_bits.Count + " of " + _client.Available);
-            } while (_client.Available != 0);
+                cm.WriteLine("Got " + file_bits.Count + " of " + client.Available);
+			} while (stream.DataAvailable);
             cm.WriteLine("File recieved");
             num_gotten = Directory.GetFiles("./Recieved Files/").Length;
             File.WriteAllBytes("./Recieved Files/file"+_t, file_bits.ToArray());
@@ -185,18 +191,18 @@ namespace FileTransferClient
 		private void SendText(String msg)
 		{
 			byte[] tmp = Encoding.ASCII.GetBytes(msg);
-			_client.BeginSend(tmp, 0, tmp.Length, SocketFlags.None, new AsyncCallback(SendCall), null);
+			stream.BeginWrite(tmp, 0, tmp.Length, new AsyncCallback(SendCall), null);
 		}
 
         #region callbacks
         private void SendCall(IAsyncResult r)
 		{
-			_client.EndSend(r);
+			stream.EndRead(r);
 		}
 		
 		private void RecCall(IAsyncResult r)
 		{
-			int len = _client.EndReceive(r);
+			int len = stream.EndRead(r);
 			byte[] rec = new byte[len];
 			Array.Copy(buffer, rec, len);
 			
