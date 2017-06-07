@@ -17,7 +17,8 @@ C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferClient\obj\De
 C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferClient\bin\Debug\FileTransferClient.exe
 C:\Users\kevin_000\Documents\GitHub\FileTransferClient\FileTransferClient\bin\Debug\FileTransferClient.pdb
 C:\Users\kevin\Documents\GitHub\FileTransferClient\FileTransferClient\bin\Debug\FileTransferClient.exe.config
-C:\Users\kevin\Documents\GitHub\FileTransferClient\FileTransferClient\bin\Debug\FileTransferClient.exe
-C:\Users\kevin\Documents\GitHub\FileTransferClient\FileTransferClient\bin\Debug\FileTransferClient.pdb
 C:\Users\kevin\Documents\GitHub\FileTransferClient\FileTransferClient\obj\Debug\FileTransferClient.exe
 C:\Users\kevin\Documents\GitHub\FileTransferClient\FileTransferClient\obj\Debug\FileTransferClient.pdb
+C:\Users\kevin\Documents\GitHub\FileTransferClient\FileTransferClient\bin\Debug\FileTransferClient.exe
+C:\Users\kevin\Documents\GitHub\FileTransferClient\FileTransferClient\bin\Debug\FileTransferClient.pdb
+C:\Users\kevin\Documents\GitHub\FileTransferClient\FileTransferClient\obj\Debug\FileTransferClient.csprojResolveAssemblyReference.cache
