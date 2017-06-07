@@ -81,6 +81,20 @@ namespace FileTransferClient
 				cm.WriteLine("Stopping program...");
 				Environment.Exit(0);
 			}
+
+            if(command.StartsWith("help"))
+            {
+                foreach (Command c in Command.avail_commands)
+                {
+                    cm.Write(c.name+": ");
+                    foreach (String al in c.aliases)
+                        cm.Write(", " + al);
+                    cm.Write(" [");
+                    foreach (String v in c.vars)
+                        cm.Write(" " + v);
+                    cm.WriteLine(" ]");
+                }
+            }
 			
 			foreach(Command c in Command.avail_commands)
 			{
@@ -108,7 +122,7 @@ namespace FileTransferClient
                             if (c.name == "get-file")
                             {
                                 try {
-                                    RecFile(com[1].Split('.')[1]);
+                                    RecFile(com[1]);
                                 }
                                 catch (IndexOutOfRangeException)
                                 {
@@ -149,8 +163,8 @@ namespace FileTransferClient
             } while (_client.Available != 0);
             cm.WriteLine("File recieved");
             num_gotten = Directory.GetFiles("./Recieved Files/").Length;
-            File.WriteAllBytes("./Recieved Files/file"+num_gotten+"."+_t, file_bits.ToArray());
-            cm.WriteLine("FIle saved at ./Recieved Files/file" + num_gotten + "." + _t);
+            File.WriteAllBytes("./Recieved Files/file"+_t, file_bits.ToArray());
+            cm.WriteLine("FIle saved at ./Recieved Files/" + _t);
             
         }
 
